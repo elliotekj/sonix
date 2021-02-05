@@ -42,11 +42,9 @@ defmodule Sonix.Tcp do
   end
 
   defp do_recv(responses \\ [], conn, bytes, timeout) do
-    with(
-      {:ok, response} <- Connection.call(conn, {:recv, bytes, timeout})
-    ) do
+    with({:ok, response} <- Connection.call(conn, {:recv, bytes, timeout})) do
       if String.ends_with?(response, "\r\n") do
-        {:ok, Enum.reduce(responses, response, & &1 <> &2)}
+        {:ok, Enum.reduce(responses, response, &(&1 <> &2))}
       else
         do_recv([response | responses], conn, bytes, timeout)
       end
